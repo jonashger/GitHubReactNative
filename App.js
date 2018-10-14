@@ -3,10 +3,12 @@ import { StyleSheet, Text, View,ScrollView,AsyncStorage, TouchableOpacity } from
 
 import Repo from './components/Repo';
 import NewRepoModal from './components/NewRepoModal';
+import DadosRepo from './components/DadosRepo';
 
 export default class App extends React.Component {
   state = {
     modalVisible: false,
+    dadosRepoVisible: false,
     repos: [],
   };
 
@@ -16,6 +18,22 @@ export default class App extends React.Component {
     this.setState({repos});
   }
 
+  removeRepo = async( repo )=>{
+    let index = this.state.repos.indexOf(repo)
+    let repos = this.state.repos
+    
+    repos.splice(index,1)
+
+    this.setState({
+      modalVisible: false,
+      dadosRepoVisible: false,
+      repos,
+    });
+    
+    await AsyncStorage.setItem('@AppGitGub:repos', JSON.stringify(this.state.repos));
+  }
+
+  
   addRepository = async (newRepoText) => {
     const repoCall = await fetch(`http://api.github.com/repos/${newRepoText}`);
     const response = await repoCall.json();
@@ -29,6 +47,7 @@ export default class App extends React.Component {
 
     this.setState({
       modalVisible: false,
+      dadosRepoVisible: false,
       repos:[
         ...this.state.repos,
         repository
@@ -50,12 +69,15 @@ export default class App extends React.Component {
         
         <ScrollView contentContainerStyle={styles.repoList}>
           {this.state.repos.map( repo => 
-            <Repo key={repo.id} data={repo}/>
+                   <Repo key={repo.id} data={repo} onRemove={this.removeRepo}/>
           )}
         </ScrollView>
         <NewRepoModal onCancel={() => this.setState({ modalVisible: false})}
          onAdd={this.addRepository}
          visible={this.state.modalVisible}/>
+         <DadosRepo onCancel={() => this.setState({ dadosRepoVisible: false})}
+         onRemove={this.addRepository}
+         visible={this.state.dadosRepoVisible}/>
       </View>
     );
   }
