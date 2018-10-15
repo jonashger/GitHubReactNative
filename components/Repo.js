@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import {View, StyleSheet,Text,Image,TouchableOpacity} from 'react-native';
 
+import DadosRepo from './DadosRepo';
 export default class Repo extends Component{
+    state = {
+        dadosRepoVisible: false,
+      };
     render() {
       
       return(<View style={styles.repo}>
@@ -9,9 +13,10 @@ export default class Repo extends Component{
             style={styles.repoImage}
             source={{ uri:this.props.data.thumbnail}}/>
             <View style={styles.repoInfo}>
+            <TouchableOpacity onPress={()=>this.setState({ dadosRepoVisible: true})}>
                 <Text style={styles.repoTitle}>{this.props.data.title}</Text>
                 <Text style={styles.repoAuthor}>{this.props.data.author}</Text>
-                    
+            </TouchableOpacity>                    
             </View>
                          <TouchableOpacity style={[styles.rigthAlign]}
                             onPress={() => this.props.onRemove(this.props.data)}>
@@ -19,7 +24,11 @@ export default class Repo extends Component{
                                    <Text style={[styles.deleteText]}>X</Text>
                                 </View>
                          </TouchableOpacity>
+            <DadosRepo onCancel={() => this.setState({ dadosRepoVisible: false})}
+            visible={this.state.dadosRepoVisible}
+            data={this.props.data}/>
         </View>
+        
       );
     };
 }

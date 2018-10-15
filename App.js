@@ -3,7 +3,6 @@ import { StyleSheet, Text, View,ScrollView,AsyncStorage, TouchableOpacity } from
 
 import Repo from './components/Repo';
 import NewRepoModal from './components/NewRepoModal';
-import DadosRepo from './components/DadosRepo';
 
 export default class App extends React.Component {
   state = {
@@ -35,24 +34,34 @@ export default class App extends React.Component {
 
   
   addRepository = async (newRepoText) => {
-    const repoCall = await fetch(`http://api.github.com/repos/${newRepoText}`);
+    const repoCall = await fetch(`https://api.github.com/users/${newRepoText}/repos`);
     const response = await repoCall.json();
 
-    const repository ={
-      id: response.id,
-      thumbnail: response.owner.avatar_url,
-      title: response.name,
-      author: response.owner.login,
-    };
-
-    this.setState({
-      modalVisible: false,
-      dadosRepoVisible: false,
-      repos:[
-        ...this.state.repos,
-        repository
-      ]
+    const repositories = [];
+    response.forEach(data => {
+      const repository ={
+        id: data.id,
+        thumbnail: data.owner.avatar_url,
+        title: data.name,
+        author: data.owner.login,
+        repoText: data.full_name,
+        watchers: data.watchers,
+        forks: data.forks,
+        language: data.language,
+        stars: data.stargazers_count,
+        description: data.description,
+      };   
+      this.setState({
+        modalVisible: false,
+        dadosRepoVisible: false,
+        repos:[
+          ...this.state.repos,
+          repository
+        ]
+      });
     });
+    
+ 
 
     await AsyncStorage.setItem('@AppGitGub:repos', JSON.stringify(this.state.repos));
   };
@@ -75,9 +84,7 @@ export default class App extends React.Component {
         <NewRepoModal onCancel={() => this.setState({ modalVisible: false})}
          onAdd={this.addRepository}
          visible={this.state.modalVisible}/>
-         <DadosRepo onCancel={() => this.setState({ dadosRepoVisible: false})}
-         onRemove={this.addRepository}
-         visible={this.state.dadosRepoVisible}/>
+      
       </View>
     );
   }

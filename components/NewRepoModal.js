@@ -18,7 +18,7 @@ export default class NewRepoModal extends Component {
                         autoCapitalize= "none"
                         style= {styles.boxInput}
                         underlineColorAndroid="rgba(0,0,0,0)"
-                        placeholder="organização/repositório"
+                        placeholder="userID"
                         value= {this.state.newRepoText}
                         onChangeText = {newRepoText => this.setState({newRepoText})}
                          />
