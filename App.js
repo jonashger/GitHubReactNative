@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, View,ScrollView,AsyncStorage, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View,ScrollView,AsyncStorage, TouchableOpacity,ToastAndroid,ActivityIndicator } from 'react-native';
 
 import Repo from './components/Repo';
+import Loader from './components/Loader';
 import NewRepoModal from './components/NewRepoModal';
 
 export default class App extends React.Component {
@@ -9,6 +10,7 @@ export default class App extends React.Component {
     modalVisible: false,
     dadosRepoVisible: false,
     repos: [],
+    loading: false,
   };
 
   async componentDidMount(){
@@ -20,7 +22,7 @@ export default class App extends React.Component {
   removeRepo = async( repo )=>{
     let index = this.state.repos.indexOf(repo)
     let repos = this.state.repos
-    
+
     repos.splice(index,1)
 
     this.setState({
@@ -34,36 +36,43 @@ export default class App extends React.Component {
 
   
   addRepository = async (newRepoText) => {
+    this.setState({
+      loading: true,
+    })
     const repoCall = await fetch(`https://api.github.com/users/${newRepoText}/repos`);
     const response = await repoCall.json();
 
-    const repositories = [];
-    response.forEach(data => {
-      const repository ={
-        id: data.id,
-        thumbnail: data.owner.avatar_url,
-        title: data.name,
-        author: data.owner.login,
-        repoText: data.full_name,
-        watchers: data.watchers,
-        forks: data.forks,
-        language: data.language,
-        stars: data.stargazers_count,
-        description: data.description,
-      };   
-      this.setState({
-        modalVisible: false,
-        dadosRepoVisible: false,
-        repos:[
-          ...this.state.repos,
-          repository
-        ]
-      });
-    });
-    
- 
-
-    await AsyncStorage.setItem('@AppGitGub:repos', JSON.stringify(this.state.repos));
+    if (response !== null && response !== undefined && response.message === undefined){
+        response.forEach(data => {
+          const repository ={
+            id: data.id,
+            thumbnail: data.owner.avatar_url,
+            title: data.name,
+            author: data.owner.login,
+            repoText: data.full_name,
+            watchers: data.watchers,
+            forks: data.forks,
+            language: data.language,
+            stars: data.stargazers_count,
+            description: data.description,
+          };   
+          this.setState({
+            modalVisible: false,
+            dadosRepoVisible: false,
+            repos:[
+              ...this.state.repos, 
+              repository
+            ],
+          });
+        });
+        
+        await AsyncStorage.setItem('@AppGitGub:repos', JSON.stringify(this.state.repos));
+    }else{
+      ToastAndroid.show('Repositório não Encontrado', ToastAndroid.SHORT);
+    }
+    this.setState({
+      loading: false,
+    })
   };
 
   render() {
@@ -84,7 +93,9 @@ export default class App extends React.Component {
         <NewRepoModal onCancel={() => this.setState({ modalVisible: false})}
          onAdd={this.addRepository}
          visible={this.state.modalVisible}/>
-      
+
+         <Loader
+          loading={this.state.loading} />
       </View>
     );
   }
