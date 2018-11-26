@@ -1,3 +1,7 @@
+/**
+ * PT-BR translations.
+ */
+
 export default ptBR = {
   hello: 'Olá Mundo',
   RepoNotFound: 'Repositório não Encontrado',
@@ -10,5 +14,6 @@ export default ptBR = {
   Cancel: 'Cancelar',
   AddRepository: 'Adicionar Repositório',
   Send: 'Enviar',
-  UserID: 'ID do Usuário'
+  UserID: 'ID do Usuário',
+  RepositoryInformation: 'Informação do Repositório',
 }

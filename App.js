@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View,ScrollView,AsyncStorage, TouchableOpacity,ToastAndroid,ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View,ScrollView,AsyncStorage, TouchableOpacity,ToastAndroid } from 'react-native';
 
 import Repo from './components/Repo';
 import Loader from './components/Loader';
@@ -8,13 +8,16 @@ import translate from './locales';
 import I18n from 'react-native-i18n'
 
 export default class App extends React.Component {
-  state = {
-    modalVisible: false,
-    dadosRepoVisible: false,
-    repos: [],
-    loading: false,
-    locale: 'pt-BR'
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      modalVisible: false,
+      dadosRepoVisible: false,
+      repos: [],
+      loading: false,
+      locale: 'pt-BR'
+    };
+   }
 
   async componentDidMount(){
     const repos = JSON.parse(await AsyncStorage.getItem('@AppGitGub:repos')) || [];
@@ -22,6 +25,9 @@ export default class App extends React.Component {
     this.setState({repos});
   }
 
+  /**
+   * Remove o repositório do localstorage.
+   */
   removeRepo = async( repo )=>{
     let index = this.state.repos.indexOf(repo)
     let repos = this.state.repos
@@ -37,7 +43,9 @@ export default class App extends React.Component {
     await AsyncStorage.setItem('@AppGitGub:repos', JSON.stringify(this.state.repos));
   }
 
-  
+  /**
+   * Chamada a API do github para buscar as informações do repositório e depois armazena-los no local storage.
+   */
   addRepository = async (newRepoText) => {
     this.setState({
       loading: true,
@@ -91,7 +99,6 @@ export default class App extends React.Component {
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.headerText}>Github App</Text>
-          
           <TouchableOpacity onPress={() => this.handleLocale('en')}>
             <Text style={(I18n.locale === 'en') ? styles.i18nSelected : styles.i18nUnselected }>EN</Text>
           </TouchableOpacity>
@@ -105,15 +112,19 @@ export default class App extends React.Component {
         
         <ScrollView contentContainerStyle={styles.repoList}>
           {this.state.repos.map( repo => 
-                   <Repo key={repo.id} data={repo} onRemove={this.removeRepo}/>
+            <Repo 
+              key={repo.id} 
+              data={repo} 
+              onRemove={this.removeRepo}
+            />
           )}
         </ScrollView>
-        <NewRepoModal onCancel={() => this.setState({ modalVisible: false})}
-         onAdd={this.addRepository}
-         visible={this.state.modalVisible}/>
-
-         <Loader
-          loading={this.state.loading} />
+        <NewRepoModal 
+          onCancel={() => this.setState({ modalVisible: false})}
+          onAdd={this.addRepository}
+          visible={this.state.modalVisible}
+        />
+        <Loader loading={this.state.loading} />
       </View>
     );
   }

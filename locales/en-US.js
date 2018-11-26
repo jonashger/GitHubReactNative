@@ -1,3 +1,7 @@
+/**
+ * EN translations
+ */
+
 export default en = {
   hello: 'Hello World',
   RepoNotFound: 'Repository not found',
@@ -10,5 +14,6 @@ export default en = {
   Cancel: 'Cancel',
   AddRepository: 'Add Repository',
   Send: 'Send',
-  UserID: 'User ID'
+  UserID: 'User ID',
+  RepositoryInformation: 'Repository Information',
 }
