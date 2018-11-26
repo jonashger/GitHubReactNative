@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import {View, Text,Modal,TextInput,StyleSheet, TouchableOpacity} from 'react-native';
+import translate from "../locales";
 
 
 export default class NewRepoModal extends Component {
@@ -13,12 +14,12 @@ export default class NewRepoModal extends Component {
             <Modal onRequestClose={this.props.onCancel} animationType="fade" transparent={true} visible={this.props.visible}>
                 <View style={styles.modalContainer}>
                     <View style={styles.boxContainer}>
-                        <Text style={styles.boxTitle}>Adicionar Repositório</Text>
+                        <Text style={styles.boxTitle}>{translate('AddRepository')}</Text>
                         <TextInput autoFocus
                         autoCapitalize= "none"
                         style= {styles.boxInput}
                         underlineColorAndroid="rgba(0,0,0,0)"
-                        placeholder="userID"
+                        placeholder={translate('UserID')}
                         value= {this.state.newRepoText}
                         onChangeText = {newRepoText => this.setState({newRepoText})}
                          />
@@ -26,11 +27,11 @@ export default class NewRepoModal extends Component {
 
                             <TouchableOpacity style={[styles.button,styles.cancelButton]}
                             onPress={this.props.onCancel}>
-                                <Text style={styles.buttonText}>Cancelar</Text>
+                                <Text style={styles.buttonText}>{translate('Cancel')}</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={[styles.button,styles.sendButton]}
                             onPress={() => this.props.onAdd(this.state.newRepoText)}>
-                                <Text style={styles.buttonText}>Enviar</Text>
+                                <Text style={styles.buttonText}>{translate('Send')}</Text>
                             </TouchableOpacity>
                          </View>    
                          

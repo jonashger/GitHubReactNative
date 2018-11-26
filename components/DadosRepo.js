@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import {View, Text,Modal,TextInput,StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text,Modal,StyleSheet, TouchableOpacity} from 'react-native';
+import translate from "../locales";
 
 
 export default class DadosRepo extends Component {
@@ -15,16 +16,16 @@ export default class DadosRepo extends Component {
                     <View style={styles.boxContainer}>
                         <Text style={styles.boxTitle}>Informação do Repositório "{this.props.data.repoText}"</Text>
                     
-                        <Text>Descrição: {this.props.data.description || `Sem descrição`}</Text>
-                        <Text>Linguagem: {this.props.data.language}</Text>
-                        <Text>Estrelas: {this.props.data.stars}</Text>
-                        <Text>Forks: {this.props.data.forks}</Text>
-                        <Text>Observando: {this.props.data.watchers}</Text>
+                        <Text>{translate('Description')}: {this.props.data.description || translate('WithoutDescription')}</Text>
+                        <Text>{translate('Language')}: {this.props.data.language}</Text>
+                        <Text>{translate('Stars')}: {this.props.data.stars}</Text>
+                        <Text>{translate('Forks')}: {this.props.data.forks}</Text>
+                        <Text>{translate('Watching')}: {this.props.data.watchers}</Text>
                     </View>
                          <View style={styles.buttonContainer}>
                                 <TouchableOpacity style={[styles.button,styles.cancelButton]}
                                         onPress={this.props.onCancel}>
-                                            <Text style={styles.buttonText}>Cancelar</Text>
+                                            <Text style={styles.buttonText}>{translate('Cancel')}</Text>
                                 </TouchableOpacity>
                             </View>
                 </View>

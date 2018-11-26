@@ -4,6 +4,8 @@ import { StyleSheet, Text, View,ScrollView,AsyncStorage, TouchableOpacity,ToastA
 import Repo from './components/Repo';
 import Loader from './components/Loader';
 import NewRepoModal from './components/NewRepoModal';
+import translate from './locales';
+import I18n from 'react-native-i18n'
 
 export default class App extends React.Component {
   state = {
@@ -11,6 +13,7 @@ export default class App extends React.Component {
     dadosRepoVisible: false,
     repos: [],
     loading: false,
+    locale: 'pt-BR'
   };
 
   async componentDidMount(){
@@ -68,18 +71,33 @@ export default class App extends React.Component {
         
         await AsyncStorage.setItem('@AppGitGub:repos', JSON.stringify(this.state.repos));
     }else{
-      ToastAndroid.show('Repositório não Encontrado', ToastAndroid.SHORT);
+      ToastAndroid.show(translate('RepoNotFound') , ToastAndroid.SHORT);
     }
     this.setState({
       loading: false,
     })
   };
 
+  handleLocale(locale) {
+    I18n.locale = locale;
+
+    this.setState({
+      locale
+    });
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.headerText}>Github App</Text>
+          
+          <TouchableOpacity onPress={() => this.handleLocale('en')}>
+            <Text style={(I18n.locale === 'en') ? styles.i18nSelected : styles.i18nUnselected }>EN</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.handleLocale('pt-BR')}>
+            <Text style={(I18n.locale === 'pt-BR') ? styles.i18nSelected : styles.i18nUnselected}>BR</Text>
+          </TouchableOpacity>
           <TouchableOpacity onPress={()=>this.setState({ modalVisible: true})}>
             <Text style={styles.headerButton}>+</Text>
           </TouchableOpacity>
@@ -126,5 +144,12 @@ const styles = StyleSheet.create({
   repoList:{
     padding: 20,
   },
+  i18nSelected: {
+    fontSize: 16,
+    fontWeight: 'bold'
+  },
+  i18nUnselected: {
+    fontSize: 16
+  }
 
 });

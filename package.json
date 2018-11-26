@@ -12,14 +12,18 @@
     "start": "react-native start",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "test": "jest"
+    "test": "jest",
+    "react-devtool": "react-devtools start"
   },
   "jest": {
     "preset": "react-native"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "expo": "^30.0.1",
     "react": "16.3.1",
-    "react-native": "~0.55.2"
+    "react-devtools": "^3.4.2",
+    "react-native": "~0.55.2",
+    "react-native-i18n": "^2.0.15"
   }
 }
