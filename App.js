@@ -4,6 +4,7 @@ import { StyleSheet, Text, View,ScrollView,AsyncStorage, TouchableOpacity,ToastA
 import Repo from './components/Repo';
 import Loader from './components/Loader';
 import NewRepoModal from './components/NewRepoModal';
+import Sobre from './components/Sobre';
 import translate from './locales';
 import I18n from 'react-native-i18n'
 
@@ -13,6 +14,7 @@ export default class App extends React.Component {
     this.state = {
       modalVisible: false,
       dadosRepoVisible: false,
+      aboutVisible: false,
       repos: [],
       loading: false,
       locale: 'pt-BR'
@@ -36,13 +38,19 @@ export default class App extends React.Component {
 
     this.setState({
       modalVisible: false,
+      aboutVisible: false,
       dadosRepoVisible: false,
       repos,
     });
     
     await AsyncStorage.setItem('@AppGitGub:repos', JSON.stringify(this.state.repos));
   }
-
+  componentWillUnmount(){
+    this.setState({...this.setState, modalVisible: false,
+      aboutVisible: false,
+      dadosRepoVisible: false,
+    })
+   }
   /**
    * Chamada a API do github para buscar as informações do repositório e depois armazena-los no local storage.
    */
@@ -69,6 +77,7 @@ export default class App extends React.Component {
           };   
           this.setState({
             modalVisible: false,
+            aboutVisible: false,
             dadosRepoVisible: false,
             repos:[
               ...this.state.repos, 
@@ -99,6 +108,9 @@ export default class App extends React.Component {
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.headerText}>Github App</Text>
+          <TouchableOpacity onPress={() => this.setState({ aboutVisible: true})}>
+            <Text  >?</Text>
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => this.handleLocale('en')}>
             <Text style={(I18n.locale === 'en') ? styles.i18nSelected : styles.i18nUnselected }>EN</Text>
           </TouchableOpacity>
@@ -125,6 +137,9 @@ export default class App extends React.Component {
           visible={this.state.modalVisible}
         />
         <Loader loading={this.state.loading} />
+        <Sobre 
+        onCancel={() => this.setState({ aboutVisible: false})}
+        visible={this.state.aboutVisible} />
       </View>
     );
   }
